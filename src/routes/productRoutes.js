@@ -1,70 +1,26 @@
 const express = require("express");
 const router = express.Router();
-const pool = require("../config/db");
+
+const {
+  getAllProducts,
+  getFeaturedProducts,
+  getBestSellers,
+  getNewArrivals,
+  getProductById,
+} = require("../controllers/productController");
 
 // GET ALL PRODUCTS
-router.get("/", async (req, res) => {
-  try {
-    const result = await pool.query(
-      "SELECT * FROM products"
-    );
+router.get("/", getAllProducts);
 
-    res.status(200).json(result.rows);
-  } catch (error) {
-    console.error(error);
+// FEATURED PRODUCTS
+router.get("/featured", getFeaturedProducts);
 
-    res.status(500).json({
-      message: "Failed to fetch products",
-    });
-  }
-});
+// BEST SELLERS
+router.get("/best-sellers", getBestSellers);
 
-// Featured Products
+// NEW ARRIVALS
+router.get("/new-arrivals", getNewArrivals);
 
-router.get("/featured", async (req, res) => {
-  try {
-    const result = await pool.query(
-      "SELECT * FROM products WHERE featured = true"
-    );
-
-    res.json(result.rows);
-  } catch (error) {
-    res.status(500).json({
-      message: "Server Error",
-    });
-  }
-});
-
-// Best Sellers
-
-router.get("/best-sellers", async (req, res) => {
-  try {
-    const result = await pool.query(
-      "SELECT * FROM products WHERE bestseller = true"
-    );
-
-    res.json(result.rows);
-  } catch (error) {
-    res.status(500).json({
-      message: "Server Error",
-    });
-  }
-}); 
-
-// New Arrivals
-
-router.get("/new-arrivals", async (req, res) => {
-  try {
-    const result = await pool.query(
-      "SELECT * FROM products WHERE new_arrival = true"
-    );
-
-    res.json(result.rows);
-  } catch (error) {
-    res.status(500).json({
-      message: "Server Error",
-    });
-  }
-});
+router.get("/:id", getProductById);
 
 module.exports = router;
